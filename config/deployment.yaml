@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-deployment
+  labels:
+    app:
+      prometheus-deployment
+
+spec:
+  selector:
+    matchLabels:
+      app: prometheus-deployment
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: prometheus-deployment
+    spec:
+      containers:
+        - name: prometheus
+          image: prom/prometheus
+          resources:
+            requests:
+              cpu: 250m
+              memory: 0.5Gi
+            limits:
+              cpu: 500m  
+              memory: 2Gi
+          selector:
+          ports:
+            - containerPort: 9090
+          volumeMounts:
+          - name: prometheus-storage-volume
+            mountPath: /prometheus/
+      volumes:
+        - name: prometheus-storage-volume
+          emptyDir: {}
